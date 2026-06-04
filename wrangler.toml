@@ -6,12 +6,13 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "mcp-marketplace-db"
-database_id = "placeholder-run-wrangler-d1-create"
+database_id = "56c9451c-8503-4cba-8d1f-1b67ff93382a"
 
 # 로컬 개발용 변수 (.dev.vars 파일에서 민감 정보 관리)
 [vars]
-ENVIRONMENT = "development"
-APP_URL = "http://localhost:8787"
+ENVIRONMENT = "production"
+APP_URL = "https://mcp-marketplace.xcaywin.workers.dev"
+GITHUB_CLIENT_ID = "Ov23liMBETHZiYmr71O3"
 # GITHUB_CLIENT_ID는 .dev.vars에 설정
 # GITHUB_CLIENT_SECRET은 .dev.vars에 설정 (또는 wrangler secret put)
 # JWT_SECRET은 .dev.vars에 설정

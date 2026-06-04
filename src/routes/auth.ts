@@ -1,37 +1,28 @@
 import { Hono } from 'hono';
+import { setCookie, deleteCookie } from 'hono/cookie';
 import type { Env } from '../types';
 import { exchangeCodeForToken, getGitHubUser, getOAuthUrl } from '../lib/github';
-import { createToken, makeSessionCookie, clearSessionCookie } from '../lib/auth';
+import { createToken } from '../lib/auth';
 
+const TOKEN_TTL = 60 * 60 * 24 * 7;
 const auth = new Hono<{ Bindings: Env }>();
 
-// GitHub OAuth 시작
 auth.get('/github', (c) => {
-  const state = crypto.randomUUID();
   const callbackUrl = `${c.env.APP_URL}/auth/callback`;
-  const url = getOAuthUrl(c.env.GITHUB_CLIENT_ID, state, callbackUrl);
-
-  c.header('Set-Cookie', `oauth_state=${state}; HttpOnly; SameSite=Lax; Path=/; Max-Age=600`);
+  const url = getOAuthUrl(c.env.GITHUB_CLIENT_ID, 'state', callbackUrl);
   return c.redirect(url);
 });
 
-// GitHub OAuth 콜백
 auth.get('/callback', async (c) => {
-  const { code, state } = c.req.query();
-  const cookieHeader = c.req.header('Cookie') ?? '';
-  const storedState = cookieHeader.match(/oauth_state=([^;]+)/)?.[1];
-
-  if (!code || !state || state !== storedState) {
-    return c.redirect('/?error=auth_failed');
-  }
+  const { code } = c.req.query();
+  if (!code) return c.redirect('/?error=no_code');
 
   const accessToken = await exchangeCodeForToken(code, c.env.GITHUB_CLIENT_ID, c.env.GITHUB_CLIENT_SECRET);
-  if (!accessToken) return c.redirect('/?error=auth_failed');
+  if (!accessToken) return c.redirect('/?error=no_token');
 
   const ghUser = await getGitHubUser(accessToken);
-  if (!ghUser) return c.redirect('/?error=auth_failed');
+  if (!ghUser) return c.redirect('/?error=no_user');
 
-  // DB에 사용자 upsert
   const userId = `gh_${ghUser.id}`;
   await c.env.DB.prepare(
     `INSERT INTO users (id, github_id, github_login, email, avatar_url)
@@ -47,14 +38,19 @@ auth.get('/callback', async (c) => {
     c.env.JWT_SECRET
   );
 
-  c.header('Set-Cookie', makeSessionCookie(token));
-  c.header('Set-Cookie', 'oauth_state=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0', { append: true });
+  setCookie(c, 'mcp_session', token, {
+    httpOnly: true,
+    sameSite: 'Lax',
+    path: '/',
+    maxAge: TOKEN_TTL,
+    secure: true,
+  });
+
   return c.redirect('/');
 });
 
-// 로그아웃
 auth.get('/logout', (c) => {
-  c.header('Set-Cookie', clearSessionCookie());
+  deleteCookie(c, 'mcp_session', { path: '/' });
   return c.redirect('/');
 });
 

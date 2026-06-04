@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
+import { getCookie } from 'hono/cookie';
+import type { Context } from 'hono';
 import type { Env, Server } from '../types';
-import { verifyToken, getSessionCookie } from '../lib/auth';
+import { verifyToken } from '../lib/auth';
 import { layout } from '../ui/layout';
 import { homePage } from '../ui/pages/home';
 import { detailPage } from '../ui/pages/detail';
@@ -9,8 +11,8 @@ import { submitPage } from '../ui/pages/submit';
 const servers = new Hono<{ Bindings: Env }>();
 
 // 헬퍼: 현재 로그인 유저 가져오기
-async function getUser(c: { req: { header: (k: string) => string | undefined }; env: Env }) {
-  const token = getSessionCookie(c.req.header('Cookie') ?? null);
+async function getUser(c: Context<{ Bindings: Env }>) {
+  const token = getCookie(c, 'mcp_session');
   if (!token) return null;
   return verifyToken(token, c.env.JWT_SECRET);
 }
