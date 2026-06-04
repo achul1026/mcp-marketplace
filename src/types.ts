@@ -29,8 +29,19 @@ export type Server = {
   price: number;
   is_approved: number;
   download_count: number;
+  version: string;
   created_at: string;
   updated_at: string;
+};
+
+export type Review = {
+  id: string;
+  user_id: string;
+  server_id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  github_login?: string;
 };
 
 export type Category =

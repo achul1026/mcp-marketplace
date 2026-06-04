@@ -24,6 +24,7 @@ export function layout(title: string, content: string, user: JwtPayload | null):
         <a href="/?category=all" class="text-gray-400 hover:text-white transition">탐색</a>
         ${user
           ? `<a href="/submit" class="text-gray-400 hover:text-white transition">서버 등록</a>
+             <a href="/dashboard" class="text-gray-400 hover:text-white transition">대시보드</a>
              <div class="flex items-center gap-2">
                <img src="${escHtml(user.avatar ?? '')}" alt="" class="w-7 h-7 rounded-full" />
                <span class="text-gray-300">${escHtml(user.login)}</span>

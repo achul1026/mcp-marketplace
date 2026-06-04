@@ -2,10 +2,14 @@ import { Hono } from 'hono';
 import type { Env } from './types';
 import { servers } from './routes/servers';
 import { auth } from './routes/auth';
+import { reviews } from './routes/reviews';
+import { dashboard } from './routes/dashboard';
 
 const app = new Hono<{ Bindings: Env }>();
 
 app.route('/', servers);
+app.route('/', reviews);
+app.route('/', dashboard);
 app.route('/auth', auth);
 
 app.onError((err, c) => {

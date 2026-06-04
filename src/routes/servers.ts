@@ -108,7 +108,16 @@ servers.get('/server/:id', async (c) => {
 
   if (!server) return c.html(layout('404', '<p class="text-center py-16 text-gray-400">서버를 찾을 수 없습니다.</p>', user), 404);
 
-  return c.html(layout(server.name, detailPage(server), user));
+  const reviewResult = await c.env.DB.prepare(
+    `SELECT r.*, u.github_login FROM reviews r
+     JOIN users u ON r.user_id = u.id
+     WHERE r.server_id = ? ORDER BY r.created_at DESC LIMIT 20`
+  ).bind(id).all<import('../types').Review>();
+
+  const reviews = reviewResult.results;
+  const avg = reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : null;
+
+  return c.html(layout(server.name, detailPage(server, { reviews, avg, count: reviews.length }, user), user));
 });
 
 // POST /api/servers/:id/download — 다운로드 카운트 증가
