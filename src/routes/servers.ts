@@ -52,7 +52,7 @@ servers.get('/', async (c) => {
 servers.get('/submit', async (c) => {
   const user = await getUser(c);
   if (!user) return c.redirect('/auth/github');
-  return c.html(layout('서버 등록', submitPage(), user));
+  return c.html(layout('Submit Server', submitPage(), user));
 });
 
 // POST /api/servers — 서버 등록
@@ -64,13 +64,12 @@ servers.post('/api/servers', async (c) => {
   const { name, description, category, github_url, install_command } = body as Record<string, string>;
 
   if (!name || !description || !category || !github_url || !install_command) {
-    const html = layout('서버 등록', submitPage('모든 필드를 입력해주세요.'), user);
+    const html = layout('Submit Server', submitPage('All fields are required.'), user);
     return c.html(html, 400);
   }
 
-  // GitHub URL 검증
   if (!github_url.startsWith('https://github.com/')) {
-    const html = layout('서버 등록', submitPage('GitHub URL 형식이 올바르지 않습니다.'), user);
+    const html = layout('Submit Server', submitPage('Invalid GitHub URL.'), user);
     return c.html(html, 400);
   }
 
@@ -106,7 +105,7 @@ servers.get('/server/:id', async (c) => {
     'SELECT * FROM servers WHERE id = ? AND is_approved = 1'
   ).bind(id).first<Server>();
 
-  if (!server) return c.html(layout('404', '<p class="text-center py-16 text-gray-400">서버를 찾을 수 없습니다.</p>', user), 404);
+  if (!server) return c.html(layout('Not Found', '<p class="text-center py-16 text-gray-400">Server not found.</p>', user), 404);
 
   const reviewResult = await c.env.DB.prepare(
     `SELECT r.*, u.github_login FROM reviews r

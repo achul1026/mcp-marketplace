@@ -34,16 +34,6 @@ export type Server = {
   updated_at: string;
 };
 
-export type Review = {
-  id: string;
-  user_id: string;
-  server_id: string;
-  rating: number;
-  comment: string | null;
-  created_at: string;
-  github_login?: string;
-};
-
 export type Category =
   | 'productivity'
   | 'data'
@@ -53,12 +43,22 @@ export type Category =
   | 'other';
 
 export const CATEGORY_LABELS: Record<Category, string> = {
-  productivity: '생산성',
-  data: '데이터',
-  developer: '개발자 도구',
+  productivity: 'Productivity',
+  data: 'Data',
+  developer: 'Developer Tools',
   ai: 'AI',
-  communication: '커뮤니케이션',
-  other: '기타',
+  communication: 'Communication',
+  other: 'Other',
+};
+
+export type Review = {
+  id: string;
+  user_id: string;
+  server_id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  github_login?: string;
 };
 
 export type JwtPayload = {

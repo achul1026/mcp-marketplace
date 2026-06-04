@@ -1,5 +1,4 @@
-import type { Server } from '../../types';
-import type { JwtPayload } from '../../types';
+import type { Server, JwtPayload } from '../../types';
 import { CATEGORY_LABELS } from '../../types';
 import { escHtml } from '../layout';
 
@@ -17,37 +16,35 @@ export function dashboardPage(
   return `
 <div class="mb-8 flex items-center justify-between">
   <div>
-    <h1 class="text-2xl font-bold">내 대시보드</h1>
+    <h1 class="text-2xl font-bold">My Dashboard</h1>
     <p class="text-gray-400 text-sm mt-1">@${escHtml(user.login)}</p>
   </div>
   <a href="/submit" class="bg-brand hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-    + 서버 등록
+    + Submit Server
   </a>
 </div>
 
-<!-- 요약 카드 -->
 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
   <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
-    <p class="text-gray-400 text-sm mb-1">등록 서버</p>
+    <p class="text-gray-400 text-sm mb-1">Servers</p>
     <p class="text-3xl font-bold">${servers.length}</p>
   </div>
   <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
-    <p class="text-gray-400 text-sm mb-1">총 다운로드</p>
+    <p class="text-gray-400 text-sm mb-1">Total Installs</p>
     <p class="text-3xl font-bold">${totalDownloads.toLocaleString()}</p>
   </div>
   <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 col-span-2 md:col-span-1">
-    <p class="text-gray-400 text-sm mb-1">수익</p>
-    <p class="text-3xl font-bold">$0 <span class="text-sm text-gray-500 font-normal">(Stripe 연동 예정)</span></p>
+    <p class="text-gray-400 text-sm mb-1">Revenue</p>
+    <p class="text-3xl font-bold">$0 <span class="text-sm text-gray-500 font-normal">(Stripe coming soon)</span></p>
   </div>
 </div>
 
-<!-- 서버 목록 -->
-<h2 class="text-lg font-semibold mb-4">등록한 서버</h2>
+<h2 class="text-lg font-semibold mb-4">Your Servers</h2>
 ${servers.length === 0
   ? `<div class="text-center py-16 text-gray-500 bg-gray-900 rounded-xl border border-gray-800">
        <p class="text-2xl mb-2">📦</p>
-       <p class="mb-3">아직 등록한 서버가 없습니다.</p>
-       <a href="/submit" class="text-brand hover:underline text-sm">첫 번째 서버 등록하기 →</a>
+       <p class="mb-3">No servers yet.</p>
+       <a href="/submit" class="text-brand hover:underline text-sm">Submit your first server →</a>
      </div>`
   : `<div class="space-y-3">
       ${servers.map(serverRow).join('')}
@@ -69,16 +66,16 @@ function serverRow(s: Server & { avg_rating: number; review_count: number }): st
   </div>
   <div class="flex items-center gap-6 text-sm shrink-0">
     <div class="text-center">
-      <p class="text-gray-400 text-xs">다운로드</p>
+      <p class="text-gray-400 text-xs">Installs</p>
       <p class="font-semibold">${s.download_count.toLocaleString()}</p>
     </div>
     <div class="text-center">
       <p class="text-yellow-400 text-xs">${stars(s.avg_rating)}</p>
-      <p class="text-gray-400 text-xs">${s.review_count}개 리뷰</p>
+      <p class="text-gray-400 text-xs">${s.review_count} reviews</p>
     </div>
     <form method="POST" action="/api/servers/${escHtml(s.id)}/delete"
-          onsubmit="return confirm('정말 삭제하시겠습니까?')">
-      <button type="submit" class="text-red-500 hover:text-red-400 text-xs transition">삭제</button>
+          onsubmit="return confirm('Delete this server?')">
+      <button type="submit" class="text-red-500 hover:text-red-400 text-xs transition">Delete</button>
     </form>
   </div>
 </div>`;

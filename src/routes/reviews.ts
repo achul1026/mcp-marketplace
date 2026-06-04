@@ -23,13 +23,12 @@ reviews.post('/api/servers/:id/review', async (c) => {
   const comment = (body['comment'] as string | undefined)?.slice(0, 500) ?? null;
 
   if (!rating || rating < 1 || rating > 5) {
-    return c.json({ error: '별점은 1~5점이어야 합니다.' }, 400);
+    return c.json({ error: 'Rating must be between 1 and 5.' }, 400);
   }
 
-  // 자신의 서버에 리뷰 불가
   const server = await c.env.DB.prepare('SELECT author_id FROM servers WHERE id = ?').bind(id).first<{ author_id: string }>();
-  if (!server) return c.json({ error: '서버를 찾을 수 없습니다.' }, 404);
-  if (server.author_id === user.sub) return c.json({ error: '자신의 서버에는 리뷰를 남길 수 없습니다.' }, 403);
+  if (!server) return c.json({ error: 'Server not found.' }, 404);
+  if (server.author_id === user.sub) return c.json({ error: "You can't review your own server." }, 403);
 
   const reviewId = crypto.randomUUID();
   await c.env.DB.prepare(

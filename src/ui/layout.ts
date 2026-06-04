@@ -2,7 +2,7 @@ import type { JwtPayload } from '../types';
 
 export function layout(title: string, content: string, user: JwtPayload | null): string {
   return `<!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,17 +21,17 @@ export function layout(title: string, content: string, user: JwtPayload | null):
         <span class="text-brand">⚡</span> MCP Marketplace
       </a>
       <nav class="flex items-center gap-4 text-sm">
-        <a href="/?category=all" class="text-gray-400 hover:text-white transition">탐색</a>
+        <a href="/?category=all" class="text-gray-400 hover:text-white transition">Explore</a>
         ${user
-          ? `<a href="/submit" class="text-gray-400 hover:text-white transition">서버 등록</a>
-             <a href="/dashboard" class="text-gray-400 hover:text-white transition">대시보드</a>
+          ? `<a href="/submit" class="text-gray-400 hover:text-white transition">Submit Server</a>
+             <a href="/dashboard" class="text-gray-400 hover:text-white transition">Dashboard</a>
              <div class="flex items-center gap-2">
                <img src="${escHtml(user.avatar ?? '')}" alt="" class="w-7 h-7 rounded-full" />
                <span class="text-gray-300">${escHtml(user.login)}</span>
-               <a href="/auth/logout" class="text-gray-500 hover:text-white text-xs transition">로그아웃</a>
+               <a href="/auth/logout" class="text-gray-500 hover:text-white text-xs transition">Sign out</a>
              </div>`
           : `<a href="/auth/github" class="bg-brand hover:bg-blue-600 text-white px-3 py-1.5 rounded-md transition text-sm font-medium">
-               GitHub으로 로그인
+               Sign in with GitHub
              </a>`
         }
       </nav>
@@ -41,7 +41,7 @@ export function layout(title: string, content: string, user: JwtPayload | null):
     ${content}
   </main>
   <footer class="border-t border-gray-800 mt-16 py-8 text-center text-gray-600 text-sm">
-    <p>MCP Marketplace · <a href="https://modelcontextprotocol.io" class="hover:text-gray-400" target="_blank">MCP 공식 문서</a></p>
+    <p>MCP Marketplace · <a href="https://modelcontextprotocol.io" class="hover:text-gray-400" target="_blank">MCP Docs</a></p>
   </footer>
 </body>
 </html>`;
