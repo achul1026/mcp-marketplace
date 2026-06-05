@@ -2,8 +2,17 @@ import type { Server, Category } from '../../types';
 import { CATEGORY_LABELS } from '../../types';
 import { escHtml } from '../layout';
 
-export function homePage(servers: Server[], query: string, category: string): string {
+export function homePage(servers: Server[], query: string, category: string, page: number, hasNext: boolean): string {
   const categories = Object.entries(CATEGORY_LABELS) as [Category, string][];
+  const baseQuery = new URLSearchParams();
+  if (query) baseQuery.set('q', query);
+  if (category && category !== 'all') baseQuery.set('category', category);
+  const pageLink = (p: number) => {
+    const params = new URLSearchParams(baseQuery);
+    if (p > 1) params.set('page', String(p));
+    const qs = params.toString();
+    return qs ? `/?${qs}` : '/';
+  };
 
   return `
 <div class="mb-8">
@@ -43,7 +52,17 @@ ${servers.length === 0
      </div>`
   : `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
        ${servers.map(serverCard).join('')}
-     </div>`
+     </div>
+     ${(page > 1 || hasNext) ? `
+     <div class="flex justify-between items-center mt-8 text-sm">
+       ${page > 1
+         ? `<a href="${pageLink(page - 1)}" class="text-gray-400 hover:text-white transition">← Prev</a>`
+         : '<span></span>'}
+       <span class="text-gray-500">Page ${page}</span>
+       ${hasNext
+         ? `<a href="${pageLink(page + 1)}" class="text-gray-400 hover:text-white transition">Next →</a>`
+         : '<span></span>'}
+     </div>` : ''}`
 }`;
 }
 

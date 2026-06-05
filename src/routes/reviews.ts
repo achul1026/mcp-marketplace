@@ -40,6 +40,19 @@ reviews.post('/api/servers/:id/review', async (c) => {
   return c.redirect(`/server/${id}`);
 });
 
+// POST /api/servers/:id/review/delete — 본인 리뷰 삭제
+reviews.post('/api/servers/:id/review/delete', async (c) => {
+  const user = await getUser(c);
+  if (!user) return c.json({ error: 'Unauthorized' }, 401);
+
+  const { id } = c.req.param();
+  await c.env.DB.prepare(
+    'DELETE FROM reviews WHERE server_id = ? AND user_id = ?'
+  ).bind(id, user.sub).run();
+
+  return c.redirect(`/server/${id}`);
+});
+
 // GET /api/servers/:id/reviews (JSON)
 reviews.get('/api/servers/:id/reviews', async (c) => {
   const { id } = c.req.param();

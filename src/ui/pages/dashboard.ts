@@ -61,6 +61,7 @@ function serverRow(s: Server & { avg_rating: number; review_count: number }): st
       <a href="/server/${escHtml(s.id)}" class="font-semibold hover:text-brand transition">${escHtml(s.name)}</a>
       <span class="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-400">${escHtml(label)}</span>
       <span class="text-xs text-gray-500">v${escHtml(s.version)}</span>
+      ${!s.is_approved ? '<span class="text-xs px-2 py-0.5 rounded-full bg-yellow-900/40 text-yellow-400 border border-yellow-800">Unpublished</span>' : ''}
     </div>
     <p class="text-sm text-gray-400 truncate">${escHtml(s.description)}</p>
   </div>
@@ -73,6 +74,7 @@ function serverRow(s: Server & { avg_rating: number; review_count: number }): st
       <p class="text-yellow-400 text-xs">${stars(s.avg_rating)}</p>
       <p class="text-gray-400 text-xs">${s.review_count} reviews</p>
     </div>
+    <a href="/server/${escHtml(s.id)}/edit" class="text-brand hover:text-blue-400 text-xs transition">Edit</a>
     <form method="POST" action="/api/servers/${escHtml(s.id)}/delete"
           onsubmit="return confirm('Delete this server?')">
       <button type="submit" class="text-red-500 hover:text-red-400 text-xs transition">Delete</button>

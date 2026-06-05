@@ -22,6 +22,7 @@ export function layout(title: string, content: string, user: JwtPayload | null):
       </a>
       <nav class="flex items-center gap-4 text-sm">
         <a href="/?category=all" class="text-gray-400 hover:text-white transition">Explore</a>
+        <a href="/collections" class="text-gray-400 hover:text-white transition">Collections</a>
         ${user
           ? `<a href="/submit" class="text-gray-400 hover:text-white transition">Submit Server</a>
              <a href="/dashboard" class="text-gray-400 hover:text-white transition">Dashboard</a>

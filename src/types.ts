@@ -30,6 +30,15 @@ export type Server = {
   is_approved: number;
   download_count: number;
   version: string;
+  last_verified_at: string | null;
+  verify_status: 'ok' | 'failed' | null;
+  gh_stars: number | null;
+  gh_license: string | null;
+  gh_last_commit: string | null;
+  gh_has_readme: number | null;
+  gh_readme_length: number | null;
+  risk_score: number | null;
+  risk_signals: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -66,4 +75,15 @@ export type JwtPayload = {
   login: string;
   avatar: string;
   exp: number;
+};
+
+export type Collection = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  author_id: string;
+  author_login: string;
+  created_at: string;
+  updated_at: string;
 };

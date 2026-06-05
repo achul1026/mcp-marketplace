@@ -118,8 +118,8 @@ migrations/
 ## 로드맵
 
 - [x] MVP: 서버 목록 · 등록 · 상세 · GitHub 로그인
-- [ ] Phase 1: Stripe Connect 결제 · 평점/리뷰 · 개발자 대시보드
-- [ ] Phase 2: 보안 자동 검증 · 커뮤니티 · API
+- [x] Phase 1: 평점/리뷰 · 개발자 대시보드 · 서버 버전 관리 (결제 보류)
+- [ ] Phase 2: 자동 검증 (GitHub 메타 완료, 코드 스캔 예정) · 클라이언트 통합 · 컬렉션
 
 ## License
 
